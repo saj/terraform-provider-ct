@@ -15,27 +15,22 @@
 package types
 
 import (
-	ignTypes "github.com/coreos/ignition/config/v2_0/types"
+	"errors"
+
 	"github.com/coreos/ignition/config/validate/report"
 )
 
-type Networkd struct {
-	Units []NetworkdUnit `yaml:"units"`
-}
+var (
+	ErrCompressionInvalid = errors.New("invalid compression method")
+)
 
-type NetworkdUnit struct {
-	Name     string `yaml:"name"`
-	Contents string `yaml:"contents"`
-}
+type Compression string
 
-func init() {
-	register2_0(func(in Config, out ignTypes.Config, platform string) (ignTypes.Config, report.Report) {
-		for _, unit := range in.Networkd.Units {
-			out.Networkd.Units = append(out.Networkd.Units, ignTypes.NetworkdUnit{
-				Name:     ignTypes.NetworkdUnitName(unit.Name),
-				Contents: unit.Contents,
-			})
-		}
-		return out, report.Report{}
-	})
+func (c Compression) Validate() report.Report {
+	switch c {
+	case "", "gzip":
+	default:
+		return report.ReportFromError(ErrCompressionInvalid, report.EntryError)
+	}
+	return report.Report{}
 }

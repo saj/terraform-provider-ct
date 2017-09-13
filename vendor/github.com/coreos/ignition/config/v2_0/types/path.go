@@ -15,27 +15,25 @@
 package types
 
 import (
-	ignTypes "github.com/coreos/ignition/config/v2_0/types"
+	"errors"
+	"path"
+
 	"github.com/coreos/ignition/config/validate/report"
 )
 
-type Networkd struct {
-	Units []NetworkdUnit `yaml:"units"`
+var (
+	ErrPathRelative = errors.New("path not absolute")
+)
+
+type Path string
+
+func (p Path) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + string(p) + `"`), nil
 }
 
-type NetworkdUnit struct {
-	Name     string `yaml:"name"`
-	Contents string `yaml:"contents"`
-}
-
-func init() {
-	register2_0(func(in Config, out ignTypes.Config, platform string) (ignTypes.Config, report.Report) {
-		for _, unit := range in.Networkd.Units {
-			out.Networkd.Units = append(out.Networkd.Units, ignTypes.NetworkdUnit{
-				Name:     ignTypes.NetworkdUnitName(unit.Name),
-				Contents: unit.Contents,
-			})
-		}
-		return out, report.Report{}
-	})
+func (p Path) Validate() report.Report {
+	if !path.IsAbs(string(p)) {
+		return report.ReportFromError(ErrPathRelative, report.EntryError)
+	}
+	return report.Report{}
 }

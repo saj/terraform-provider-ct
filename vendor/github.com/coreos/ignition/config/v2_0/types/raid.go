@@ -15,27 +15,31 @@
 package types
 
 import (
-	ignTypes "github.com/coreos/ignition/config/v2_0/types"
+	"fmt"
+
 	"github.com/coreos/ignition/config/validate/report"
 )
 
-type Networkd struct {
-	Units []NetworkdUnit `yaml:"units"`
+type Raid struct {
+	Name    string `json:"name"`
+	Level   string `json:"level"`
+	Devices []Path `json:"devices,omitempty"`
+	Spares  int    `json:"spares,omitempty"`
 }
 
-type NetworkdUnit struct {
-	Name     string `yaml:"name"`
-	Contents string `yaml:"contents"`
-}
-
-func init() {
-	register2_0(func(in Config, out ignTypes.Config, platform string) (ignTypes.Config, report.Report) {
-		for _, unit := range in.Networkd.Units {
-			out.Networkd.Units = append(out.Networkd.Units, ignTypes.NetworkdUnit{
-				Name:     ignTypes.NetworkdUnitName(unit.Name),
-				Contents: unit.Contents,
-			})
+func (n Raid) Validate() report.Report {
+	switch n.Level {
+	case "linear", "raid0", "0", "stripe":
+		if n.Spares != 0 {
+			return report.ReportFromError(fmt.Errorf("spares unsupported for %q arrays", n.Level), report.EntryError)
 		}
-		return out, report.Report{}
-	})
+	case "raid1", "1", "mirror":
+	case "raid4", "4":
+	case "raid5", "5":
+	case "raid6", "6":
+	case "raid10", "10":
+	default:
+		return report.ReportFromError(fmt.Errorf("unrecognized raid level: %q", n.Level), report.EntryError)
+	}
+	return report.Report{}
 }
