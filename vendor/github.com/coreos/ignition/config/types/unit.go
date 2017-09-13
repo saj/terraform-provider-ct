@@ -18,7 +18,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"path/filepath"
+	"path"
 
 	"github.com/coreos/go-systemd/unit"
 
@@ -35,9 +35,7 @@ type SystemdUnit struct {
 
 func (u SystemdUnit) Validate() report.Report {
 	if err := validateUnitContent(u.Contents); err != nil {
-		if err != errEmptyUnit || (err == errEmptyUnit && len(u.DropIns) == 0) {
-			return report.ReportFromError(err, report.EntryError)
-		}
+		return report.ReportFromError(err, report.EntryError)
 	}
 
 	return report.Report{}
@@ -59,7 +57,7 @@ func (u SystemdUnitDropIn) Validate() report.Report {
 type SystemdUnitName string
 
 func (n SystemdUnitName) Validate() report.Report {
-	switch filepath.Ext(string(n)) {
+	switch path.Ext(string(n)) {
 	case ".service", ".socket", ".device", ".mount", ".automount", ".swap", ".target", ".path", ".timer", ".snapshot", ".slice", ".scope":
 		return report.Report{}
 	default:
@@ -70,7 +68,7 @@ func (n SystemdUnitName) Validate() report.Report {
 type SystemdUnitDropInName string
 
 func (n SystemdUnitDropInName) Validate() report.Report {
-	switch filepath.Ext(string(n)) {
+	switch path.Ext(string(n)) {
 	case ".conf":
 		return report.Report{}
 	default:
@@ -94,7 +92,7 @@ func (u NetworkdUnit) Validate() report.Report {
 type NetworkdUnitName string
 
 func (n NetworkdUnitName) Validate() report.Report {
-	switch filepath.Ext(string(n)) {
+	switch path.Ext(string(n)) {
 	case ".link", ".netdev", ".network":
 		return report.Report{}
 	default:
@@ -102,17 +100,11 @@ func (n NetworkdUnitName) Validate() report.Report {
 	}
 }
 
-var errEmptyUnit = fmt.Errorf("invalid or empty unit content")
-
 func validateUnitContent(content string) error {
 	c := bytes.NewBufferString(content)
-	unit, err := unit.Deserialize(c)
+	_, err := unit.Deserialize(c)
 	if err != nil {
 		return fmt.Errorf("invalid unit content: %s", err)
-	}
-
-	if len(unit) == 0 {
-		return errEmptyUnit
 	}
 
 	return nil
