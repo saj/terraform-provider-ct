@@ -9,7 +9,7 @@ import:
   subpackages:
   - cidr
 - package: github.com/aws/aws-sdk-go
-  version: d6b4bfeba6997082629986cac2a932a233ba745e
+  version: v1.8.39
   subpackages:
   - aws
   - aws/awserr
@@ -41,7 +41,7 @@ import:
   subpackages:
   - netrc
 - package: github.com/coreos/container-linux-config-transpiler
-  version: v0.3.1
+  version: v0.4.2
   subpackages:
   - config
 - package: github.com/coreos/go-semver
@@ -49,7 +49,7 @@ import:
   subpackages:
   - semver
 - package: github.com/coreos/ignition
-  version: d75d0aa3bf307f0954ce4ea8cac56dacec8d16ce
+  version: v0.17.2
   subpackages:
   - config/types
   - config/validate
