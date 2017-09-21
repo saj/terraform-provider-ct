@@ -1,8 +1,8 @@
-hash: 9b507c7d391c99a0032c8831f1bd95d3bf216893e9e31f31d839df1206e91b84
-updated: 2017-09-16T01:58:49.108137983+10:00
+hash: 63b0698e0f2219df0554ee808583196cb08a74e0bc8d6c7b555b0e96b8a9c284
+updated: 2017-09-22T01:25:20.806081871+10:00
 imports:
 - name: github.com/ajeddeloh/yaml
-  version: 1072abfea31191db507785e2e0c1b8d1440d35a5
+  version: 6b94386aeefd8c4b8470aee72bfca084c2f91da9
 - name: github.com/alecthomas/units
   version: 6b4e7dc5e3143b85ea77909c72caf89416fc2915
 - name: github.com/apparentlymart/go-cidr
@@ -44,7 +44,7 @@ imports:
   subpackages:
   - netrc
 - name: github.com/coreos/container-linux-config-transpiler
-  version: d42f09a1374bc318d853b53e5a31148db68a4e2a
+  version: 7824ae0d1f743e55baf0bcb0fc754173c3d3c45c
   subpackages:
   - config
   - config/astyaml
@@ -65,7 +65,7 @@ imports:
   version: 11813c57bc05f30644bbae7891ae30a4a62e0b33
   subpackages:
   - config/types
-  - config/v2_0/types
+  - config/v2_1/types
   - config/validate
   - config/validate/report
 - name: github.com/davecgh/go-spew
